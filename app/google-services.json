@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1037979345662",
+    "firebase_url": "https://rssi-to-web.firebaseio.com",
+    "project_id": "rssi-to-web",
+    "storage_bucket": "rssi-to-web.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037979345662:android:562c18a20d9d7cdf",
+        "android_client_info": {
+          "package_name": "com.example.ibeaconreceivesample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037979345662-1kh58j5i44vp8jujit1oofu4ma7n13le.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJAm7aeXwn6tp9aud3y2h8M1PCZgGch40"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
