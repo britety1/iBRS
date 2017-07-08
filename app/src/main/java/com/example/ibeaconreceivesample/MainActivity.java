@@ -13,6 +13,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -38,22 +39,23 @@ public class MainActivity extends Activity {
     String uuid, major, minor, RSSI = null;
     String strLatitude, strLongitude, strTime;
     int Tx;
-    int count = 0;       //スキャン回数
-    int tx_count = 0;   //各距離の番号
+    int count = 0;       //スキャン回数 จำนวนของการสแกน
+    int tx_count = 0;   // จำนวนแต่ละระยะ
     //int flag;
     Button button;
+    private String keyPush;
 
     //GPS
-    // 許可されたパーミッションの種類を識別する番号
+    // 許可されたパーミッションの種類を識別する番号 ตัวเลขที่ระบุประเภทของสิทธิ์ที่ได้รับอนุญาต
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
     // GPSの位置情報を許可するボタン
-    //private Button mBtnGrantGPS;
+    //private Button mBtnGrantGPS;ปุ่มเพื่อให้ข้อมูลตำแหน่งจีพีเอสของ
     // 各種情報を表示するラベル
     private TextView mTvLocationPermissionState, mTvLatitude, mTVLongitude, mTVTime;
-    // 位置情報を管理するクラス
+    // 位置情報を管理するクラス ระดับที่จัดการข้อมูลสถานที่
     private LocationManager mLocationManager;
     public FirebaseDatabase database;
-    public DatabaseReference myRef;
+    public DatabaseReference myRefRSSI, myRefLat, myRefLong, myRefTD;
 
 
     @Override
@@ -62,7 +64,11 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("message");
+        myRefRSSI = database.getReference("RSSI");
+        myRefLat = database.getReference("Lat");
+        myRefLong = database.getReference("Long");
+        myRefTD = database.getReference("TimeDate");
+
 
         //setContentViewしたViewの中からこのidを持つViewを探す
         tv = (TextView) findViewById(R.id.textView);
@@ -173,7 +179,7 @@ public class MainActivity extends Activity {
     }
 
 
-    public BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+    public BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {//อ่านค่า RSSI จาก BLE
         @Override
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
             // Log.d(TAG, "receive!!!");
@@ -229,7 +235,11 @@ public class MainActivity extends Activity {
                             + "RSSI : " + RSSI + "\n");
                 }
             });
-            myRef.child("RSSI").child("values").setValue(RSSI);
+//            myRefmyRefRSSI.child("RSSI").child("values").setValue(RSSI);
+            myRefRSSI.child("RSSI").child("values").setValue(RSSI);
+
+            keyPush = myRefRSSI.child("History").push().getKey();
+            myRefRSSI.child("History").child(keyPush).child("RSSI").setValue(RSSI);
 
 
             // Log.d(TAG, "device name:"+device.getName() );
@@ -339,6 +349,21 @@ public class MainActivity extends Activity {
                                 //mLocationManager.removeUpdates(this);
                             }
                         });
+
+
+                        myRefLat.child("Latitude").child("values").setValue(location.getLatitude());
+                        myRefLong.child("Logtitude").child("values").setValue(location.getLongitude());
+                        myRefTD.child("TimeDate").child("values").setValue(df.format(location.getTime()));
+
+
+//                        keyPush = myRefRSSI.child("History").push().getKey();
+//                        myRefRSSI.child("History").child(keyPush).child("Latitude").setValue(location.getLatitude());
+//                        myRefRSSI.child("History").child(keyPush).child("Logtitude").setValue(location.getLongitude());
+//                        myRefRSSI.child("History").child(keyPush).child("TimeDate").setValue(df.format(location.getTime()));
+
+
+
+
                     }
 
                     @Override
